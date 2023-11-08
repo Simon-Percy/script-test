@@ -1,36 +1,47 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const what = () => setCount(count + 1);
+  const [InitialSecs, setInitialSecs] = useState(60);
+  const [secs, setSecs] = useState(InitialSecs);
+
   useEffect(() => {
-    setInterval(what, 2000);
+    setTimeout(() => {
+      setSecs(secs - 1);
+    }, 1000);
   }, []);
 
+  const handleStart = () => {
+    mins.current.color = "red";
+  };
+
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div id="container">
+      <div id="break">
+        <p id="break-label">Break Length</p>
+        <p id="break-length">5</p>
+        <button id="break-increment">⬆️</button>
+        <button id="break-decrement">⬇️</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button>count is {count}</button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+
+      <button id="start_stop" onClick={handleStart}>
+        Pause/Play
+      </button>
+      <button id="reset"> Reset</button>
+      <div id="timer-label">Session</div>
+      <div id="time-left">{secs}</div>
+      <div id="session">
+        <div id="session-label">Session Length</div>
+        <div id="session-length">25</div>
+        <button
+          id="session-increment"
+          onClick={() => setInitialSecs(InitialSecs + 1)}
+        >
+          ⬆️
+        </button>
+        <button id="session-decrement">⬇️</button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   );
 }
 
