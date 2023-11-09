@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 function App() {
-  const [secs, setSecs] = useState(1500 % 60);
+  const [secs, setSecs] = useState(0);
   const [breakMins, setBreakMins] = useState(5);
   const [initialMins, setInitialMins] = useState(25);
   const [mins, setMins] = useState(initialMins);
@@ -10,13 +10,16 @@ function App() {
   const timin = useRef("");
   const [pause, setPause] = useState(false);
   const audio = useRef();
+  const [timerID, setTimerID] = useState(null);
 
   const reset = () => {
+    setTiming(true);
     setInitialMins(25);
     setBreakMins(5);
     setMins(25);
     setSecs(0);
     timin.current.textContent = "Session";
+    setPause(false);
   };
   const breakdre = () => {
     if (breakMins > 1 && !pause) {
@@ -57,8 +60,10 @@ function App() {
           setSecs(secs - 1);
         }
       }, 1000);
+      setTimerID(timer);
     } else {
-      clearTimeout(setTimeout);
+      clearTimeout(timerID);
+      setTimerID(null);
     }
     if (mins <= 0 && secs <= 0) {
       audio.current.play();

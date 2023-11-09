@@ -13,8 +13,8 @@ body {
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
-  display: flex; /* Center children horizontally */
-  flex-direction: column; /* Stack children vertically */
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
