@@ -15,6 +15,7 @@ function App() {
     setInitialMins(25);
     setBreakMins(5);
     setMins(25);
+    setSecs(0);
     timin.current.textContent = "Session";
   };
   const breakdre = () => {
@@ -102,7 +103,8 @@ function App() {
         Session
       </div>
       <div id="time-left">
-        {mins}:{secs}
+        {(mins + "0").length > 2 ? mins : "0" + mins}:
+        {(secs + "0").length > 2 ? secs : "0" + secs}
       </div>
       <div id="session">
         <div id="session-label">Session Length</div>
