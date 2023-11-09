@@ -7,75 +7,98 @@ function App() {
   const [initialMins, setInitialMins] = useState(25);
   const [mins, setMins] = useState(initialMins);
   const [timing, setTiming] = useState(true);
-  const timin = useRef();
+  const timin = useRef("");
   const [pause, setPause] = useState(false);
+  const audio = useRef();
 
-  const pausing = () => {
-    setPause(!pause);
-    if (pause) {
-    } else {
-      clearTimeout();
+  const breakdre = () => {
+    if (!timing && mins > 1 && !pause) {
+      setBreakMins(breakMins - 1);
+      setMins(breakMins - 1);
     }
-  };
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (secs === 0) {
-        setSecs(59);
-        setMins(mins - 1);
-      } else {
-        setSecs(secs - 1);
+    const decrement = () => {
+      if (!pause && mins > 1) {
+        setInitialMins(initialMins - 1);
+        setMins(initialMins - 1);
       }
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [secs]);
+    };
+    const changeTime = () => {
+      if (!timing && !pause) {
+        setBreakMins(breakMins + 1);
+        setMins(breakMins + 1);
+      } else if (!pause) {
+        setInitialMins(initialMins + 1);
+        setMins(initialMins + 1);
+      }
+    };
 
-  return (
-    <div id="container">
-      <div id="break">
-        <p id="break-label">Break Length</p>
-        <div id="break-length">{breakMins}</div>
-        <button
-          id="break-increment"
-          onClick={() => setBreakMins(breakMins + 1)}
-        >
-          ⬆️
-        </button>
-        <button
-          id="break-decrement"
-          onClick={() => setBreakMins(breakMins - 1)}
-        >
-          ⬇️
-        </button>
-      </div>
+    useEffect(() => {
+      if (pause) {
+        const timer = setTimeout(() => {
+          if (secs === 0) {
+            setSecs(59);
+            setMins(mins - 1);
+          } else {
+            setSecs(secs - 1);
+          }
+        }, 1000);
+      } else {
+        clearTimeout(setTimeout);
+      }
+      if (mins <= 0 && secs <= 0) {
+        audio.current.play();
+        if (timing) {
+          timin.current.textContent = "break";
+          setMins(breakMins);
+          setSecs((breakMins * 60) % 60);
+          setTiming(!timing);
+        } else {
+          timin.current.textContent = "Session";
+          setMins(initialMins);
+          setSecs((initialMins * 60) % 60);
+          setTiming(!timing);
+        }
+      }
+    }, [secs, pause, mins]);
 
-      <button id="start_stop" onClick={pausing}>
-        Pause/Play
-      </button>
-      <button id="reset"> Reset</button>
-      <div id="timer-label" ref={timin}>
-        Session
-      </div>
-      <div id="time-left">
-        {mins}:{secs}
-      </div>
-      <div id="session">
-        <div id="session-label">Session Length</div>
-        <div id="session-length">{initialMins}</div>
-        <button
-          id="session-increment"
-          onClick={() => setInitialMins(initialMins + 1)}
-        >
-          ⬆️
+    return (
+      <div id="container">
+        <div id="break">
+          <p id="break-label">Break Length</p>
+          <div id="break-length">{breakMins}</div>
+          <button id="break-increment" onClick={changeTime}>
+            ⬆️
+          </button>
+          <button id="break-decrement" onClick={breakdre}>
+            ⬇️
+          </button>
+        </div>
+        <audio
+          src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav"
+          ref={audio}
+        ></audio>
+        <button id="start_stop" onClick={() => setPause(!pause)}>
+          Pause/Play
         </button>
-        <button
-          id="session-decrement"
-          onClick={() => setInitialMins(initialMins - 1)}
-        >
-          ⬇️
-        </button>
+        <button id="reset"> Reset</button>
+        <div id="timer-label" ref={timin}>
+          Session
+        </div>
+        <div id="time-left">
+          {mins}:{secs}
+        </div>
+        <div id="session">
+          <div id="session-label">Session Length</div>
+          <div id="session-length">{initialMins}</div>
+          <button id="session-increment" onClick={changeTime}>
+            ⬆️
+          </button>
+          <button id="session-decrement" onClick={decrement}>
+            ⬇️
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 }
-
 export default App;
