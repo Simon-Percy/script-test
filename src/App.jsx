@@ -11,10 +11,18 @@ function App() {
   const [pause, setPause] = useState(false);
   const audio = useRef();
 
+  const reset = () => {
+    setInitialMins(25);
+    setBreakMins(5);
+    setMins(25);
+    timin.current.textContent = "Session";
+  };
   const breakdre = () => {
-    if (!timing && mins > 1 && !pause) {
+    if (breakMins > 1 && !pause) {
       setBreakMins(breakMins - 1);
-      setMins(breakMins - 1);
+      if (!timing) {
+        setMins(breakMins - 1);
+      }
     }
   };
   const decrement = () => {
@@ -23,11 +31,16 @@ function App() {
       setMins(initialMins - 1);
     }
   };
-  const changeTime = () => {
-    if (!timing && !pause) {
+  const breakIncre = () => {
+    if (!pause && breakMins < 60) {
       setBreakMins(breakMins + 1);
-      setMins(breakMins + 1);
-    } else if (!pause) {
+      if (!timing) {
+        setMins(breakMins + 1);
+      }
+    }
+  };
+  const changeTime = () => {
+    if (!pause && mins < 60) {
       setInitialMins(initialMins + 1);
       setMins(initialMins + 1);
     }
@@ -67,7 +80,7 @@ function App() {
       <div id="break">
         <p id="break-label">Break Length</p>
         <div id="break-length">{breakMins}</div>
-        <button id="break-increment" onClick={changeTime}>
+        <button id="break-increment" onClick={breakIncre}>
           ⬆️
         </button>
         <button id="break-decrement" onClick={breakdre}>
@@ -81,7 +94,10 @@ function App() {
       <button id="start_stop" onClick={() => setPause(!pause)}>
         Pause/Play
       </button>
-      <button id="reset"> Reset</button>
+      <button id="reset" onClick={reset}>
+        {" "}
+        Reset
+      </button>
       <div id="timer-label" ref={timin}>
         Session
       </div>
