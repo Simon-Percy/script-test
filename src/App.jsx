@@ -2,24 +2,52 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 function App() {
-  const [secs, setSecs] = useState(0);
   const [breakMins, setBreakMins] = useState(5);
   const [initialMins, setInitialMins] = useState(25);
   const [mins, setMins] = useState(initialMins);
+  const [secs, setSecs] = useState(parseInt(mins * 60) % 60);
+
   const [timing, setTiming] = useState(true);
-  const timin = useRef("");
   const [pause, setPause] = useState(false);
   const audio = useRef();
-  const [timerID, setTimerID] = useState(null);
 
+  const toggleTimer = () => {
+    setPause(!pause);
+  };
+  let timerTimeout;
+  const handleTimeout = () => {
+    if (pause) {
+      if (secs === 0 && mins === 0) {
+        audio.current.play();
+        if (timing) {
+          setTiming(false);
+          setMins(breakMins);
+          setSecs((breakMins * 60) % 60);
+        } else {
+          setTiming(true);
+          setMins(initialMins);
+          setSecs((initialMins * 60) % 60);
+        }
+      } else {
+        setSecs(secs - 1);
+        if (secs === 0) {
+          setSecs(59);
+          setMins(mins - 1);
+        }
+        timerTimeout = setTimeout(handleTimeout, 1000);
+      }
+    }
+  };
   const reset = () => {
-    setTiming(true);
     setInitialMins(25);
     setBreakMins(5);
     setMins(25);
-    setSecs(0);
-    timin.current.textContent = "Session";
     setPause(false);
+    audio.current.pause();
+    audio.current.currentTime = 0;
+    setSecs((mins * 60) % 60);
+    clearTimeout(timerTimeout);
+    setTiming(true);
   };
   const breakdre = () => {
     if (breakMins > 1 && !pause) {
@@ -51,34 +79,9 @@ function App() {
   };
 
   useEffect(() => {
-    if (pause) {
-      const timer = setTimeout(() => {
-        if (secs === 0) {
-          setSecs(59);
-          setMins(mins - 1);
-        } else {
-          setSecs(secs - 1);
-        }
-      }, 1000);
-      setTimerID(timer);
-    } else {
-      clearTimeout(timerID);
-      setTimerID(null);
-    }
-    if (mins <= 0 && secs <= 0) {
-      audio.current.play();
-      if (timing) {
-        timin.current.textContent = "break";
-        setMins(breakMins);
-        setSecs((breakMins * 60) % 60);
-        setTiming(!timing);
-      } else {
-        timin.current.textContent = "Session";
-        setMins(initialMins);
-        setSecs((initialMins * 60) % 60);
-        setTiming(!timing);
-      }
-    }
+    timerTimeout = setTimeout(handleTimeout, 1000);
+
+    return () => clearTimeout(timerTimeout);
   }, [secs, pause, mins]);
 
   return (
@@ -94,19 +97,18 @@ function App() {
         </button>
       </div>
       <audio
+        id="beep"
         src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav"
         ref={audio}
       ></audio>
-      <button id="start_stop" onClick={() => setPause(!pause)}>
+      <button id="start_stop" onClick={toggleTimer}>
         Pause/Play
       </button>
       <button id="reset" onClick={reset}>
         {" "}
         Reset
       </button>
-      <div id="timer-label" ref={timin}>
-        Session
-      </div>
+      <div id="timer-label">{timing ? "session" : "break"}</div>
       <div id="time-left">
         {(mins + "0").length > 2 ? mins : "0" + mins}:
         {(secs + "0").length > 2 ? secs : "0" + secs}
