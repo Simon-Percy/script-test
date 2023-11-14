@@ -17,33 +17,49 @@ const reducer = (state, action) => {
     case "HANDLE_TIMEOUT":
       // Reducer logic for handling timeouts
       // ...
-      return { ...newState }; // Ensure to spread the newState
+      const newStateTimeout = { ...state }; // Initialize newState based on current state
+      // Update newState properties as needed
+      // ...
+      return newStateTimeout;
     case "RESET":
       // Reducer logic for resetting
       // ...
-      return { ...newState };
+      const newStateReset = { ...state }; // Initialize newState based on current state
+      // Update newState properties as needed
+      // ...
+      return newStateReset;
     case "BREAK_DECREMENT":
       // Reducer logic for break decrement
       // ...
-      return { ...newState };
+      const newStateBreakDecrement = { ...state }; // Initialize newState based on current state
+      // Update newState properties as needed
+      // ...
+      return newStateBreakDecrement;
     case "DECREMENT":
       // Reducer logic for decrement
       // ...
-      return { ...newState };
+      const newStateDecrement = { ...state }; // Initialize newState based on current state
+      // Update newState properties as needed
+      // ...
+      return newStateDecrement;
     case "BREAK_INCREMENT":
       // Reducer logic for break increment
       // ...
-      return { ...newState };
+      const newStateBreakIncrement = { ...state }; // Initialize newState based on current state
+      // Update newState properties as needed
+      // ...
+      return newStateBreakIncrement;
     case "CHANGE_TIME":
       // Reducer logic for changing time
       // ...
-      return { ...newState };
+      const newStateChangeTime = { ...state }; // Initialize newState based on current state
+      // Update newState properties as needed
+      // ...
+      return newStateChangeTime;
     default:
       return state;
   }
 };
-
-// ... (previous code)
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
