@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
+// remember to add comments
 function App() {
   const [breakMins, setBreakMins] = useState(5);
   const [initialMins, setInitialMins] = useState(25);
